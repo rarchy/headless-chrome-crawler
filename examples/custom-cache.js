@@ -89,19 +89,58 @@ class FsCache extends BaseCache {
 const cache = new FsCache({ file: FILE, hello: 'hello' });
 
 (async () => {
-  console.log('called');
   const crawler = await HCCrawler.launch({
-    maxConcurrency: 1,
-    skipDuplicates: true,
-    jQuery: false,
-    maxDepth: 1000,
-    onSuccess: async result => {
-      console.log(`Requested ${result.options.url}.`);
-      console.log(await crawler.pendingQueueSize())
-      console.log(await crawler.requestedCount())
-    },
     cache,
+    maxConcurrency: 10,
+    ignoreHTTPSErrors: true,
+    args: minimal_args,
+    // headless: false,
+    headless: true,
+    maxDepth: Infinity,
+    allowedDomains: [domain],
+    retryCount: 1,
+    waitUntil: 'networkidle0',
+    jQuery: false,
+    skipRequestedRedirect: true, // NEED THIS OR WHEN MAXCONCURRENCY > 1, DUPLICATE URLS WILL BE CRAWLED IN PARALLEL
+    waitFor: {
+      options: {},
+      selectorOrFunctionOrTimeout: function () {
+        const documentHeight = document.documentElement.scrollHeight;
+        window.scrollTo(0, documentHeight);
+        // You might want to check if there are any elements still loading (look for spinners, other indicators, or just wait)
+        // Return true if you are done scrolling, false otherwise
+        return true;
+      },
+    },
+    customCrawl: async (page, crawl) => {
+      // You can access the page object before requests
+      await page.setRequestInterception(true);
+      page.on('request', request => {
+        if (request.resourceType() === 'image') return request.abort(); // disabled image loading
+        if (request.resourceType() === 'stylesheet' || request.resourceType() === 'font') return request.abort() // disable fonts/css
+        if (request.url().includes('json')) return request.abort() // disable json
+        if (!request.url().includes(domain)) return request.abort() // only if request is on same domain
+        else request.continue();
+      });
+      // The result contains options, links, cookies and etc.
+      const result = await crawl();
+      // You can access the page object after requests
+      result.content = await page.content();
+      // You need to extend and return the crawled result
+      return result;
+    },
+    onSuccess: async result => {
+      const crawledPagesCount = await crawler.requestedCount()
+
+      console.log(`Crawled ${crawledPagesCount} pages: ${result.options.url}`);
+      if (crawledPagesCount === 3) {
+        crawler.pause();
+        console.log('crawler paused');
+      }
+      // console.log(`Got ${result.content} for ${result.options.url}.`);
+    },
   });
+
   await crawler.queue('https://rarchy.com');
   await crawler.onIdle();
   await crawler.close();
