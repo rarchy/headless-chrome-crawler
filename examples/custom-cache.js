@@ -45,11 +45,9 @@ const minimal_args = [
 
 const FILE = './fs-cache.json';
 
-const crawledURLs = ['https://rarchy.com/cookie-policy', 'https://rarchy.com/privacy-policy', 'https://rarchy.com/sitemaps']
+const crawledURLs = [] // ['https://rarchy.com/cookie-policy', 'https://rarchy.com/privacy-policy', 'https://rarchy.com/sitemaps']
 
 var customCache = {}
-
-// var customCache = { "queue": [{ "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/terms-of-service" }, 3, "https://rarchy.com/pricing"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/privacy-policy" }, 3, "https://rarchy.com/pricing"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/cookie-policy" }, 3, "https://rarchy.com/pricing"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/sitemaps" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/user-flow" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "http://rarchy.com/" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/sitemaps/visual-sitemap-generator" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/privacy-policy" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/cookie-policy" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }], "https://rarchy.com/robots.txt": "User-agent: *\nDisallow: *hubs_\n\nSitemap: https://rarchy.com/sitemap.xml\n\n", "b147c262c9": "1", "ac11ef3f7f": "1", "8aa163db9c": "1", "6d4a0a9995": "1" }
 
 // Create a new cache by extending BaseCache interface
 class FsCache extends BaseCache {
@@ -102,7 +100,6 @@ class FsCache extends BaseCache {
       queue.push(item);
       queue.sort((a, b) => b.priority - a.priority);
       customCache[key] = queue;
-
     }
 
     return Promise.resolve();
@@ -138,77 +135,95 @@ class FsCache extends BaseCache {
   }
 }
 
-const cache = new FsCache({ file: FILE, hello: 'hello' });
+const LIMIT = 50;
 
-(async () => {
+const cache = new FsCache({ file: FILE });
 
-  const url = "https://rarchy.com";
-  const domain = getRoot(url); // DOMAIN NEEDS TO BE WITHOUT PROTOCOL
+try {
 
-  const crawler = await HCCrawler.launch({
-    cache,
-    maxConcurrency: 10,
-    ignoreHTTPSErrors: true,
-    args: minimal_args,
-    // headless: false,
-    headless: true,
-    maxDepth: Infinity,
-    allowedDomains: [domain],
-    retryCount: 0,
-    waitUntil: 'networkidle0',
-    jQuery: false,
-    skipRequestedRedirect: true, // NEED THIS OR WHEN MAXCONCURRENCY > 1, DUPLICATE URLS WILL BE CRAWLED IN PARALLEL
-    waitFor: {
-      options: {},
-      selectorOrFunctionOrTimeout: function () {
-        const documentHeight = document.documentElement.scrollHeight;
-        window.scrollTo(0, documentHeight);
-        // You might want to check if there are any elements still loading (look for spinners, other indicators, or just wait)
-        // Return true if you are done scrolling, false otherwise
-        return true;
+  (async () => {
+
+    const url = "https://www.cemex.com/";
+    const domain = getRoot(url); // DOMAIN NEEDS TO BE WITHOUT PROTOCOL
+
+    const crawler = await HCCrawler.launch({
+      cache,
+      maxConcurrency: 10,
+      ignoreHTTPSErrors: true,
+      args: minimal_args,
+      // headless: false,
+      headless: true,
+      maxDepth: Infinity,
+      allowedDomains: [domain],
+      retryCount: 1,
+      retryDelay: 3000,
+      waitUntil: 'domcontentloaded',
+      timeout: 10000,
+      jQuery: false,
+      skipRequestedRedirect: true, // NEED THIS OR WHEN MAXCONCURRENCY > 1, DUPLICATE URLS WILL BE CRAWLED IN PARALLEL
+      // userAgent: "Rarchy/bot (+https://www.rarchy.com)",
+      waitFor: {
+        options: {},
+        selectorOrFunctionOrTimeout: function () {
+          const documentHeight = document.documentElement.scrollHeight;
+          window.scrollTo(0, documentHeight);
+          // You might want to check if there are any elements still loading (look for spinners, other indicators, or just wait)
+          // Return true if you are done scrolling, false otherwise
+          return true;
+        },
       },
-    },
-    customCrawl: async (page, crawl) => {
-      // You can access the page object before requests
-      await page.setRequestInterception(true);
-      page.on('request', request => {
-        if (request.resourceType() === 'image') return request.abort(); // disabled image loading
-        if (request.resourceType() === 'stylesheet' || request.resourceType() === 'font') return request.abort() // disable fonts/css
-        if (request.url().includes('json')) return request.abort() // disable json
-        if (!request.url().includes(domain)) return request.abort() // only if request is on same domain
-        else request.continue();
-      });
-      // The result contains options, links, cookies and etc.
-      const result = await crawl();
-      // You can access the page object after requests
-      result.content = await page.content();
-      // You need to extend and return the crawled result
-      return result;
-    },
-    onSuccess: async result => {
-      crawledURLs.push(result.options.url);
-      const crawledPagesCount = await crawler.requestedCount()
-      console.log(`Crawled ${crawledPagesCount} pages: ${result.options.url}`);
-      // crawledURLs.push(results.option.url);
-      if (crawledPagesCount === 3) {
-        // crawler.pause();
-        // console.log('crawler paused');
-        // console.log(JSON.stringify(customCache));
+      customCrawl: async (page, crawl) => {
+        // You can access the page object before requests
+        await page.setRequestInterception(true);
+        page.on('request', request => {
+          if (request.resourceType() === 'image') return request.abort(); // disabled image loading
+          if (request.resourceType() === 'stylesheet' || request.resourceType() === 'font') return request.abort() // disable fonts/css
+          // if (request.url().includes('json')) return request.abort() // disable json
+          // if (!request.url().includes(domain)) return request.abort() // only if request is on same domain
+          else request.continue();
+        });
+        // The result contains options, links, cookies and etc.
+        const result = await crawl();
+        // You can access the page object after requests
+        result.content = await page.content();
+        // You need to extend and return the crawled result
+        return result;
+      },
+      onSuccess: async result => {
+        crawledURLs.push(result.options.url);
+        const crawledPagesCount = crawledURLs.length;
+        console.log(`Crawled ${crawledPagesCount} pages: ${result.options.url}`);
+        // crawledURLs.push(results.option.url);
+        if (crawledPagesCount === LIMIT) {
+          await crawler.pause();
+          await stopCrawler();
+        }
+      },
+      onError: async error => {
+        console.log(`ERROR!!!, ${error}`);
       }
-      // console.log(`Got ${result.content} for ${result.options.url}.`);
-    },
-  });
+    });
 
-  if (!_.isEmpty(crawledURLs)) {
-    const lastURLCrawled = crawledURLs.pop();
-    await crawler.queue(lastURLCrawled);
-  } else {
-    await crawler.queue(url);
-  }
-  await crawler.onIdle();
-  console.log(crawledURLs);
-  await crawler.close();
-})();
+    async function stopCrawler() {
+      await crawler.onIdle();
+      await crawler.close();
+      console.log(crawledURLs);
+    }
+
+    if (!_.isEmpty(crawledURLs)) {
+      const lastURLCrawled = crawledURLs.pop();
+      await crawler.queue(lastURLCrawled);
+    } else {
+      await crawler.queue(url);
+    }
+
+    await stopCrawler()
+
+  })();
+
+} catch (e) {
+  console.error(e)
+}
 
 function getRoot(domain) {
   const myUrl = URL.parse(domain);
