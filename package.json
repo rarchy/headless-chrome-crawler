@@ -6,7 +6,6 @@
   "license": "MIT",
   "author": "Yuji Isobe",
   "scripts": {
-    "commitmsg": "commitlint -e $GIT_PARAMS",
     "greenkeeper-lockfile-update": "greenkeeper-lockfile-update",
     "greenkeeper-lockfile-upload": "greenkeeper-lockfile-upload",
     "lint": "eslint --quiet -f codeframe . || eslint .",
@@ -26,6 +25,7 @@
   "homepage": "https://github.com/yujiosaka/headless-chrome-crawler#readme",
   "dependencies": {
     "debug": "3.1.0",
+    "headless-chrome-crawler": "^1.8.0",
     "jquery": "3.5.1",
     "lodash": "4.17.20",
     "puppeteer": "1.20.0",
