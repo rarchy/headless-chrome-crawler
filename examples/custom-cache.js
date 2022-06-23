@@ -1,6 +1,9 @@
 const fs = require('fs');
+const URL = require('url');
 const HCCrawler = require('headless-chrome-crawler');
 const BaseCache = require('headless-chrome-crawler/cache/base');
+
+const _ = require('lodash');
 
 const minimal_args = [
   '--autoplay-policy=user-gesture-required',
@@ -42,14 +45,18 @@ const minimal_args = [
 
 const FILE = './fs-cache.json';
 
+const crawledURLs = ['https://rarchy.com/cookie-policy', 'https://rarchy.com/privacy-policy', 'https://rarchy.com/sitemaps']
+
 var customCache = {}
+
+// var customCache = { "queue": [{ "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/terms-of-service" }, 3, "https://rarchy.com/pricing"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/privacy-policy" }, 3, "https://rarchy.com/pricing"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/cookie-policy" }, 3, "https://rarchy.com/pricing"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/sitemaps" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/user-flow" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "http://rarchy.com/" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/sitemaps/visual-sitemap-generator" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/privacy-policy" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }, { "value": [{ "maxDepth": null, "priority": 0, "delay": 0, "retryCount": 1, "retryDelay": 10000, "timeout": 30000, "jQuery": false, "browserCache": true, "skipDuplicates": true, "depthPriority": true, "obeyRobotsTxt": true, "followSitemapXml": false, "skipRequestedRedirect": true, "cookies": null, "screenshot": null, "viewport": null, "allowedDomains": ["rarchy.com"], "waitUntil": "networkidle0", "waitFor": { "options": {} }, "url": "https://rarchy.com/cookie-policy" }, 3, "https://rarchy.com/terms-of-service"], "priority": 3 }], "https://rarchy.com/robots.txt": "User-agent: *\nDisallow: *hubs_\n\nSitemap: https://rarchy.com/sitemap.xml\n\n", "b147c262c9": "1", "ac11ef3f7f": "1", "8aa163db9c": "1", "6d4a0a9995": "1" }
 
 // Create a new cache by extending BaseCache interface
 class FsCache extends BaseCache {
   init() {
     // console.log(this._settings)
-    // fs.writeFileSync(this._settings.file, '{}');
-    customCache = {}
+    // fs.writeFileSync(this._settings.file, '{}');∫
+    // customCache = {}
     return Promise.resolve();
   }
 
@@ -85,11 +92,18 @@ class FsCache extends BaseCache {
     obj[key] = queue;
     fs.writeFileSync(this._settings.file, JSON.stringify(obj)); */
 
-    const queue = customCache[key] || [];
-    const item = { value, priority };
-    queue.push(item);
-    queue.sort((a, b) => b.priority - a.priority);
-    customCache[key] = queue;
+    if (crawledURLs.includes(value)) {
+      console.log(`Not enqueing ${value[0].url}`)
+    }
+
+    if (!crawledURLs.includes(value[0].url)) {
+      const queue = customCache[key] || [];
+      const item = { value, priority };
+      queue.push(item);
+      queue.sort((a, b) => b.priority - a.priority);
+      customCache[key] = queue;
+
+    }
 
     return Promise.resolve();
   }
@@ -140,7 +154,7 @@ const cache = new FsCache({ file: FILE, hello: 'hello' });
     headless: true,
     maxDepth: Infinity,
     allowedDomains: [domain],
-    retryCount: 1,
+    retryCount: 0,
     waitUntil: 'networkidle0',
     jQuery: false,
     skipRequestedRedirect: true, // NEED THIS OR WHEN MAXCONCURRENCY > 1, DUPLICATE URLS WILL BE CRAWLED IN PARALLEL
@@ -172,19 +186,27 @@ const cache = new FsCache({ file: FILE, hello: 'hello' });
       return result;
     },
     onSuccess: async result => {
+      crawledURLs.push(result.options.url);
       const crawledPagesCount = await crawler.requestedCount()
-
       console.log(`Crawled ${crawledPagesCount} pages: ${result.options.url}`);
+      // crawledURLs.push(results.option.url);
       if (crawledPagesCount === 3) {
-        crawler.pause();
-        console.log('crawler paused');
+        // crawler.pause();
+        // console.log('crawler paused');
+        // console.log(JSON.stringify(customCache));
       }
       // console.log(`Got ${result.content} for ${result.options.url}.`);
     },
   });
 
-  await crawler.queue(url);
+  if (!_.isEmpty(crawledURLs)) {
+    const lastURLCrawled = crawledURLs.pop();
+    await crawler.queue(lastURLCrawled);
+  } else {
+    await crawler.queue(url);
+  }
   await crawler.onIdle();
+  console.log(crawledURLs);
   await crawler.close();
 })();
 
