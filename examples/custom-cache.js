@@ -5,6 +5,8 @@ const BaseCache = require('headless-chrome-crawler/cache/base');
 
 const _ = require('lodash');
 
+const uri = require("urijs")
+
 const minimal_args = [
   '--autoplay-policy=user-gesture-required',
   '--disable-background-networking',
@@ -143,7 +145,7 @@ try {
 
   (async () => {
 
-    const url = "https://www.cemex.com/";
+    const url = "https://www.cemex.com/c/portal/update_language?p_l_id=49685544&redirect=%2Fcovid19&languageId=es_ES";
     const domain = getRoot(url); // DOMAIN NEEDS TO BE WITHOUT PROTOCOL
 
     const crawler = await HCCrawler.launch({
@@ -160,8 +162,8 @@ try {
       waitUntil: 'domcontentloaded',
       timeout: 10000,
       jQuery: false,
-      skipRequestedRedirect: true, // NEED THIS OR WHEN MAXCONCURRENCY > 1, DUPLICATE URLS WILL BE CRAWLED IN PARALLEL
-      // userAgent: "Rarchy/bot (+https://www.rarchy.com)",
+      // skipRequestedRedirect: true, // NEED THIS OR WHEN MAXCONCURRENCY > 1, DUPLICATE URLS WILL BE CRAWLED IN PARALLEL
+      userAgent: "Rarchy/bot (+https://www.rarchy.com)",
       waitFor: {
         options: {},
         selectorOrFunctionOrTimeout: function () {
@@ -179,27 +181,30 @@ try {
           if (request.resourceType() === 'image') return request.abort(); // disabled image loading
           if (request.resourceType() === 'stylesheet' || request.resourceType() === 'font') return request.abort() // disable fonts/css
           // if (request.url().includes('json')) return request.abort() // disable json
-          // if (!request.url().includes(domain)) return request.abort() // only if request is on same domain
+          if (!request.url().includes(domain)) return request.abort() // only if request is on same domain
           else request.continue();
         });
         // The result contains options, links, cookies and etc.
         const result = await crawl();
+        // strip parameters from links
+        result.links = result.links.map(link => uri(link).search("").href())
         // You can access the page object after requests
         result.content = await page.content();
         // You need to extend and return the crawled result
         return result;
       },
       onSuccess: async result => {
-        crawledURLs.push(result.options.url);
+        // strip query parameter from url
+        const url = uri(result.options.url).search("").href();
+        crawledURLs.push(url);
         const crawledPagesCount = crawledURLs.length;
         console.log(`Crawled ${crawledPagesCount} pages: ${result.options.url}`);
-        // crawledURLs.push(results.option.url);
         if (crawledPagesCount === LIMIT) {
           await crawler.pause();
           await stopCrawler();
         }
       },
-      onError: async error => {
+      onError: async (error, a) => {
         console.log(`ERROR!!!, ${error}`);
       }
     });

@@ -31,7 +31,8 @@
     "puppeteer": "1.20.0",
     "request": "2.88.2",
     "request-promise": "4.2.6",
-    "robots-parser": "1.0.2"
+    "robots-parser": "1.0.2",
+    "urijs": "^1.19.11"
   },
   "peerDependencies": {
     "redis": "2.8.0"
