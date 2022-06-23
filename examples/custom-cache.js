@@ -127,6 +127,10 @@ class FsCache extends BaseCache {
 const cache = new FsCache({ file: FILE, hello: 'hello' });
 
 (async () => {
+
+  const url = "https://rarchy.com";
+  const domain = getRoot(url); // DOMAIN NEEDS TO BE WITHOUT PROTOCOL
+
   const crawler = await HCCrawler.launch({
     cache,
     maxConcurrency: 10,
@@ -179,7 +183,12 @@ const cache = new FsCache({ file: FILE, hello: 'hello' });
     },
   });
 
-  await crawler.queue('https://rarchy.com');
+  await crawler.queue(url);
   await crawler.onIdle();
   await crawler.close();
 })();
+
+function getRoot(domain) {
+  const myUrl = URL.parse(domain);
+  return myUrl.host;
+}
