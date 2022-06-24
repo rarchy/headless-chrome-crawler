@@ -233,7 +233,7 @@ try {
 
 const autoScroll = async (page) => {
   try {
-    await page.evaluate(async (selectors) => {
+    await page.evaluate(async () => {
       await new Promise((resolve, reject) => {
         var totalHeight = 0;
         var distance = 250;
