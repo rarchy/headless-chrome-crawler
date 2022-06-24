@@ -145,7 +145,7 @@ try {
 
   (async () => {
 
-    const url = "https://www.cemex.com/c/portal/update_language?p_l_id=49685544&redirect=%2Fcovid19&languageId=es_ES";
+    const url = "https://basecamp.com/customers";
     const domain = getRoot(url); // DOMAIN NEEDS TO BE WITHOUT PROTOCOL
 
     const crawler = await HCCrawler.launch({
@@ -164,16 +164,6 @@ try {
       jQuery: false,
       // skipRequestedRedirect: true, // NEED THIS OR WHEN MAXCONCURRENCY > 1, DUPLICATE URLS WILL BE CRAWLED IN PARALLEL
       userAgent: "Rarchy/bot (+https://www.rarchy.com)",
-      waitFor: {
-        options: {},
-        selectorOrFunctionOrTimeout: function () {
-          const documentHeight = document.documentElement.scrollHeight;
-          window.scrollTo(0, documentHeight);
-          // You might want to check if there are any elements still loading (look for spinners, other indicators, or just wait)
-          // Return true if you are done scrolling, false otherwise
-          return true;
-        },
-      },
       customCrawl: async (page, crawl) => {
         // You can access the page object before requests
         await page.setRequestInterception(true);
@@ -186,6 +176,17 @@ try {
         });
         // The result contains options, links, cookies and etc.
         const result = await crawl();
+
+        page.on('console', async (msg) => {
+          const msgArgs = msg.args();
+          for (let i = 0; i < msgArgs.length; ++i) {
+            console.log(await msgArgs[i].jsonValue());
+          }
+        });
+
+        // scroll to bottom
+        await autoScroll(page);
+
         // strip parameters from links
         result.links = result.links.map(link => uri(link).search("").href())
         // You can access the page object after requests
@@ -229,6 +230,29 @@ try {
 } catch (e) {
   console.error(e)
 }
+
+const autoScroll = async (page) => {
+  try {
+    await page.evaluate(async (selectors) => {
+      await new Promise((resolve, reject) => {
+        var totalHeight = 0;
+        var distance = 250;
+        var timer = setInterval(async () => {
+          const scrollHeight = document.body.scrollHeight;
+          window.scrollBy(0, distance);
+          totalHeight += distance;
+          if (scrollHeight > 5000 || totalHeight >= scrollHeight) { // don't scroll if height is over 5,000
+            clearInterval(timer);
+            resolve();
+          }
+        }, 250);
+      });
+    });
+  } catch (e) {
+    console.error(e);
+    throw new Error(e);
+  }
+};
 
 function getRoot(domain) {
   const myUrl = URL.parse(domain);
